@@ -1,0 +1,109 @@
+{
+  "versions": {
+    "node": "v24.22.1",
+    "mongoose": "9.12.1",
+    "mongodb": "8.0.12"
+  },
+  "importExample": {
+    "initial": {
+      "rows": 4,
+      "totals": {
+        "impressions": 2600,
+        "clicks": 110,
+        "spendMinor": 2834
+      }
+    },
+    "replay": {
+      "rows": 4,
+      "totals": {
+        "impressions": 2600,
+        "clicks": 110,
+        "spendMinor": 2834
+      }
+    },
+    "corrected": {
+      "rows": 4,
+      "totals": {
+        "impressions": 2800,
+        "clicks": 120,
+        "spendMinor": 3000
+      }
+    },
+    "delayedOlder": {
+      "rows": 4,
+      "totals": {
+        "impressions": 2800,
+        "clicks": 120,
+        "spendMinor": 3000
+      }
+    },
+    "history": [
+      {
+        "day": "2026-01-05",
+        "campaignId": "campaign-alpha",
+        "sourceRevision": 3,
+        "metrics": {
+          "impressions": 1200,
+          "clicks": 60,
+          "spendMinor": 1400
+        }
+      },
+      {
+        "day": "2026-01-05",
+        "campaignId": "campaign-beta",
+        "sourceRevision": 1,
+        "metrics": {
+          "impressions": 600,
+          "clicks": 20,
+          "spendMinor": 500
+        }
+      },
+      {
+        "day": "2026-01-06",
+        "campaignId": "campaign-alpha",
+        "sourceRevision": 2,
+        "metrics": {
+          "impressions": 800,
+          "clicks": 30,
+          "spendMinor": 900
+        }
+      },
+      {
+        "day": "2026-01-06",
+        "campaignId": "campaign-beta",
+        "sourceRevision": 1,
+        "metrics": {
+          "impressions": 200,
+          "clicks": 10,
+          "spendMinor": 200
+        }
+      }
+    ]
+  },
+  "queryExample": {
+    "seededSnapshots": 840,
+    "params": {
+      "workspaceId": "workspace-a",
+      "provider": "synthetic-ads",
+      "accountId": "account-1",
+      "fromDay": "2026-01-05",
+      "toDayExclusive": "2026-01-08"
+    },
+    "sort": {
+      "day": 1,
+      "campaignId": 1
+    },
+    "explain": {
+      "winningPlanStages": [
+        "FETCH",
+        "IXSCAN"
+      ],
+      "indexesUsed": [
+        "snapshot_identity"
+      ],
+      "nReturned": 9,
+      "totalKeysExamined": 9,
+      "totalDocsExamined": 9
+    }
+  }
+}

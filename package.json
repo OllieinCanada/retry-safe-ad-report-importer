@@ -1,0 +1,32 @@
+{
+  "name": "retry-safe-ad-report-importer",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A local, synthetic daily ad snapshot importer with revision-aware atomic MongoDB writes.",
+  "type": "module",
+  "engines": {
+    "node": ">=24 <25"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "build": "tsc -p tsconfig.build.json",
+    "test": "tsx --test --test-concurrency=1 test/*.test.ts",
+    "demo": "node dist/demo.js"
+  },
+  "dependencies": {
+    "mongoose": "9.12.1"
+  },
+  "devDependencies": {
+    "@types/node": "24.19.2",
+    "mongodb-memory-server": "11.3.0",
+    "tsx": "4.23.15",
+    "typescript": "7.0.2"
+  },
+  "config": {
+    "mongodbMemoryServer": {
+      "version": "8.0.12",
+      "disablePostinstall": true,
+      "downloadDir": "./.cache/mongodb-binaries"
+    }
+  }
+}

@@ -1,0 +1,189 @@
+$ npm ci --no-audit --no-fund
+
+added 64 packages in 1s
+[exit 0]
+
+$ node --version
+v24.22.1
+[exit 0]
+
+$ npm --version
+11.9.0
+[exit 0]
+
+$ npm ls --depth=0
+retry-safe-ad-report-importer@1.0.0 /workspace/retry-safe-ad-report-importer
+├── @types/node@24.19.2
+├── mongodb-memory-server@11.3.0
+├── mongoose@9.12.1
+├── tsx@4.23.15
+└── typescript@7.0.2
+
+[exit 0]
+
+$ npm run typecheck
+
+> retry-safe-ad-report-importer@1.0.0 typecheck
+> tsc --noEmit
+
+[exit 0]
+
+$ npm run build
+
+> retry-safe-ad-report-importer@1.0.0 build
+> tsc -p tsconfig.build.json
+
+[exit 0]
+
+$ npm test
+
+> retry-safe-ad-report-importer@1.0.0 test
+> tsx --test --test-concurrency=1 test/*.test.ts
+
+Real integration server: MongoDB 8.0.12; Mongoose 9.12.1; Node v24.22.1
+✔ first import stores all expected snapshot values and totals (278.950437ms)
+✔ identical replay preserves documents, IDs, row count, and totals (15.308947ms)
+✔ two concurrent worker connections importing the same page create no duplicates (7.716169ms)
+✔ a newer correction replaces all metrics without adding to the old snapshot (7.596058ms)
+✔ a delayed older snapshot cannot undo the stored correction (9.407135ms)
+✔ different metrics at an equal revision preserve the first accepted payload (7.594365ms)
+✔ concurrent correction and older delivery leave the highest revision stored (9.348016ms)
+✔ concurrent first inserts with different revisions converge on the newer snapshot (5.948968ms)
+✔ matching campaign/account identifiers stay isolated across workspaces (10.363ms)
+✔ revision zero and dollar-prefixed identifiers insert as literal values (2.961399ms)
+✔ unrelated duplicate-key errors propagate; a partial page can be safely replayed (16.162943ms)
+Unhinted history explain: {"winningPlanStages":["FETCH","IXSCAN"],"indexesUsed":["snapshot_identity"],"nReturned":9,"totalKeysExamined":9,"totalDocsExamined":9}
+✔ account history scopes and bounds results and uses the identity index on seeded data (530.702734ms)
+✔ duplicate-key guard accepts only the exact ordered identity pattern and values (1.035289ms)
+✔ an expected insert race retries the same conditional pipeline once without upsert (6.416876ms)
+✔ a missing document after the race retry rethrows the original conflict (0.882068ms)
+✔ an unrelated initial write error propagates unchanged without retry (1.236713ms)
+✔ a database error during the race retry propagates unchanged (0.516999ms)
+✔ invalid day strings and nonexistent UTC calendar dates are rejected (0.277247ms)
+✔ unsafe, fractional, and negative counters or revisions are rejected before any write (4.065224ms)
+✔ empty scope identifiers and invalid history ranges are rejected (0.460914ms)
+ℹ tests 20
+ℹ suites 0
+ℹ pass 20
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1839.555608
+[exit 0]
+
+$ npm run demo
+
+> retry-safe-ad-report-importer@1.0.0 demo
+> node dist/demo.js
+
+{
+  "versions": {
+    "node": "v24.22.1",
+    "mongoose": "9.12.1",
+    "mongodb": "8.0.12"
+  },
+  "importExample": {
+    "initial": {
+      "rows": 4,
+      "totals": {
+        "impressions": 2600,
+        "clicks": 110,
+        "spendMinor": 2834
+      }
+    },
+    "replay": {
+      "rows": 4,
+      "totals": {
+        "impressions": 2600,
+        "clicks": 110,
+        "spendMinor": 2834
+      }
+    },
+    "corrected": {
+      "rows": 4,
+      "totals": {
+        "impressions": 2800,
+        "clicks": 120,
+        "spendMinor": 3000
+      }
+    },
+    "delayedOlder": {
+      "rows": 4,
+      "totals": {
+        "impressions": 2800,
+        "clicks": 120,
+        "spendMinor": 3000
+      }
+    },
+    "history": [
+      {
+        "day": "2026-01-05",
+        "campaignId": "campaign-alpha",
+        "sourceRevision": 3,
+        "metrics": {
+          "impressions": 1200,
+          "clicks": 60,
+          "spendMinor": 1400
+        }
+      },
+      {
+        "day": "2026-01-05",
+        "campaignId": "campaign-beta",
+        "sourceRevision": 1,
+        "metrics": {
+          "impressions": 600,
+          "clicks": 20,
+          "spendMinor": 500
+        }
+      },
+      {
+        "day": "2026-01-06",
+        "campaignId": "campaign-alpha",
+        "sourceRevision": 2,
+        "metrics": {
+          "impressions": 800,
+          "clicks": 30,
+          "spendMinor": 900
+        }
+      },
+      {
+        "day": "2026-01-06",
+        "campaignId": "campaign-beta",
+        "sourceRevision": 1,
+        "metrics": {
+          "impressions": 200,
+          "clicks": 10,
+          "spendMinor": 200
+        }
+      }
+    ]
+  },
+  "queryExample": {
+    "seededSnapshots": 840,
+    "params": {
+      "workspaceId": "workspace-a",
+      "provider": "synthetic-ads",
+      "accountId": "account-1",
+      "fromDay": "2026-01-05",
+      "toDayExclusive": "2026-01-08"
+    },
+    "sort": {
+      "day": 1,
+      "campaignId": 1
+    },
+    "explain": {
+      "winningPlanStages": [
+        "FETCH",
+        "IXSCAN"
+      ],
+      "indexesUsed": [
+        "snapshot_identity"
+      ],
+      "nReturned": 9,
+      "totalKeysExamined": 9,
+      "totalDocsExamined": 9
+    }
+  }
+}
+[exit 0]
